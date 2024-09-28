@@ -14,7 +14,7 @@ impl TuringMachine {
         println!("{}{}", " ".repeat(leading_spaces as usize), text);
     }
 
-    fn show_tape(&mut self) {
+    pub fn show_tape_and_state(&mut self) {
         let hw = Self::DISPLAY_WIDTH / 2;
 
         for loc in self.head - (hw as isize) .. self.head + (hw as isize) {
@@ -24,18 +24,15 @@ impl TuringMachine {
             match symbol {
                 0 => print!("◻"),
                 1 => print!("◼"),
-                _ => unreachable!(),
+                _ => panic!(),
             };
         }
         println!();
-        
-    }
-
-    pub fn show(&mut self) {
-        self.show_tape();
         self.centered_text(&String::from("^"), None);
+        
         let symbol = self.get_symbol();
         self.centered_text(&format!("{} o {}", self.state, symbol), None);
         println!();
+        
     }
 }

@@ -64,7 +64,7 @@ impl TuringMachine {
 
     pub fn run(&mut self, steps: u64) {
         for _ in 0..steps {
-            self.show();
+            self.show_tape_and_state();
             self.step();
             if self.halted {
                 break;

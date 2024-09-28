@@ -104,12 +104,11 @@ The dedicated computational resources towards a beaver will be proportional to t
 - (1/2) ^ #states
 - 1 / (#beavers w/ same #states)
 
-
-
-
-
-
-
-
-
-
+How to implement beaver frequency:
+- use a fast queue of beavers for each unique #states
+- determine #states to dedicate compute to using the 2-adic
+  valuation of the total number of beaver runs completed.
+  - When all beavers with up to n states have been categorized,
+    subtract n and add 1 to the 2-adic valuation to get the next
+    [#states equivalence class] to dedicate compute to.
+  - use i.trailing_zeros() - n + 1

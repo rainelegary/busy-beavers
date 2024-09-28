@@ -1,6 +1,7 @@
 mod turing_machine;
 mod turing_machine_ui;
 mod busy_beavers;
+mod fast_queue;
 
 use crate::turing_machine::TFn; 
 use crate::turing_machine::TuringMachine;

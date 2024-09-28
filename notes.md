@@ -78,29 +78,36 @@ n represents the number of (state, symbol) pairs that have been visited, includi
 If we are on digit m where m is greater than the number of digits, the transition function assumes it must go to a halting state as its next move,
 meaning the resulting machine will halt.
 
-
-
 ## Breadth-first tree search of turing-machine space
 
 A node is defined by its parent + some additional information:
 - the outputted (x, y, z) | halt on its first not-yet defined (state, symbol) pair
 
 Everything starts from empty root node
-- The root node's children are (0, 0) -> (..x, ..y, ..z) | halt
+- The root node's children are (0, 0) -> (..x, ..y, ..z)
 
 After a node is generated, it will be classified as halting, unknown, or infinite.
 - All halting or infinite nodes are leaf nodes.
 - All unknown nodes are internal nodes
 
-We will want to avoid generating mirrored branches of the tree.
-If it is feasible to calculate the amount of times a pattern is
-mirrorable and count it with that multiplicity, we can avoid
-duplicating the calculation for all of its mirrors.
+
+## Busy beaver algorithm
+
+Choose a constant number of steps we give a beaver in one "batch"
+
+Each beaver must traverse its states in numerical order to prevent [distinct but functionally equivalent] beavers from co-existing.
+
+For each #states, there is a set of beaver id's that have that many states.
+
+We want to prioritize beavers that have a smaller number of states.
+The dedicated computational resources towards a beaver will be proportional to the product of the following factors:
+- (1/2) ^ #states
+- 1 / (#beavers w/ same #states)
 
 
-## Chunk removal
 
-Chunks are periodic windows that contain blacklisted sections
+
+
 
 
 

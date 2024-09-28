@@ -1,19 +1,17 @@
-mod turing_machine_ui;
-
 use std::collections::HashMap;
 
-type TFn = HashMap<(u8, u8), (u8, u8, i8)>;
+pub type TFn = HashMap<(u8, u8), (u8, u8, i8)>;
 
-struct TuringMachine {
-    t_fn: TFn,
-    tape: (Vec<u8>, Vec<u8>),
-    state: u8,
-    head: isize,
-    halted: bool,
+pub struct TuringMachine {
+    pub t_fn: TFn,
+    pub tape: (Vec<u8>, Vec<u8>),
+    pub state: u8,
+    pub head: isize,
+    pub halted: bool,
 }
 
 impl TuringMachine {
-    fn new(t_fn: TFn) -> Self {
+    pub fn new(t_fn: TFn) -> Self {
         TuringMachine {
             t_fn,
             tape: (vec![], vec![0]),
@@ -23,10 +21,10 @@ impl TuringMachine {
         }
     }
     
-    fn vec_and_index(&mut self, loc: &isize) -> (&mut Vec<u8>, usize) {
-        match loc {
-            h if *h < 0 => (&mut self.tape.0, (-self.head - 1) as usize),
-            _ => (&mut self.tape.1, self.head as usize),
+    pub fn vec_and_index(&mut self, loc: &isize) -> (&mut Vec<u8>, usize) {
+        match *loc {
+            l if l < 0 => (&mut self.tape.0, (-l - 1) as usize),
+            l => (&mut self.tape.1, l as usize),
         }
     }
 
@@ -34,7 +32,7 @@ impl TuringMachine {
         self.vec_and_index(&self.head.clone())
     }
     
-    fn get_symbol(&mut self) -> u8 {
+    pub fn get_symbol(&mut self) -> u8 {
         let (&mut ref mut vec, index) = self.vec_and_index_head();
         vec[index]
     }
@@ -55,7 +53,6 @@ impl TuringMachine {
     fn step(&mut self) {
         let symbol = self.get_symbol();
         if !self.t_fn.contains_key(&(self.state, symbol)) {
-            println!("halt");
             self.halted = true;
             return;
         }
@@ -65,7 +62,7 @@ impl TuringMachine {
         self.move_head(delta);
     }
 
-    fn run(&mut self, steps: u64) {
+    pub fn run(&mut self, steps: u64) {
         for _ in 0..steps {
             self.show();
             self.step();
@@ -74,17 +71,4 @@ impl TuringMachine {
             }
         }
     }
-}
-
-
-fn main() {
-    let t_fn = TFn::from([
-        ((0, 0), (1, 1, 1)),
-        ((0, 1), (1, 1, -1)),
-        ((1, 0), (0, 1, -1)),
-    ]);
-
-    let mut tm = TuringMachine::new(t_fn);
-
-    tm.run(10);
 }

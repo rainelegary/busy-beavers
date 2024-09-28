@@ -102,7 +102,7 @@ For each #states, there is a set of beaver id's that have that many states.
 We want to prioritize beavers that have a smaller number of states.
 The dedicated computational resources towards a beaver will be proportional to the product of the following factors:
 - (1/2) ^ #states
-- 1 / (#beavers w/ same #states)
+- 1 / #[beavers w/ same #states]
 
 How to implement beaver frequency:
 - use a fast queue of beavers for each unique #states
@@ -112,6 +112,3 @@ How to implement beaver frequency:
     subtract n and add 1 to the 2-adic valuation to get the next
     [#states equivalence class] to dedicate compute to.
   - use i.trailing_zeros() - n + 1
-
-
-hello

@@ -16,8 +16,8 @@ impl<'a, T> FastQueue<'a, T> {
 
     pub fn push(&mut self, value: &'a T) {
         match self.push_stack {
-            0 => { self.stacks.0.push(&value); },
-            1 => { self.stacks.1.push(&value); },
+            0 => { self.stacks.0.push(value); },
+            1 => { self.stacks.1.push(value); },
             _ => panic!(),
         };
         

@@ -112,3 +112,5 @@ How to implement beaver frequency:
     subtract n and add 1 to the 2-adic valuation to get the next
     [#states equivalence class] to dedicate compute to.
   - use i.trailing_zeros() - n + 1
+
+

@@ -31,3 +31,16 @@ jobs:
 
       - name: Run tests
         run: cargo test
+
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Push code
+        run: |
+          echo "Build succeeded, pushing code..."
+          git push

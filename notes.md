@@ -12,53 +12,34 @@
 
 
 
-# Functional requirements
-
-Show a histogram of how many turing machines run exactly n steps before halting (the halting set)
-Keep a tally of known infinite runners
-Have a set of unknown machines
-Only run the ones that are unknown, and stop them as soon as they are known
-Build an infinite loop detector
-Create a machine visualizer
-
-
 # User interface
 
-See histogram
-See tallies of infinite runners, unknowns, and halters
-- halters broken up into numbers of steps
-Get indices of infinite runners
-Get indices of machines that halt after n steps
-Get indices of unknown machines
-See periodicity leaderboard among infinite runners
-- local periodicity leaderboard
-- asymptotic periodicity leaderboard
-See steps leaderboard among halters
-See 1's leaderboard among halters
+Display types
+- tally
+- list beavers
+- histogram of common low-end scores
+- leaderboard of rare high-end score
 
+Beaver statistics
+- halters
+  - lifetime
+  - max distance from origin
+  - #1's
+- infinites (dormant / propagating)
+  - pre-periodic lifetime
+  - pre-periodic max distance from origin
+  - pre-periodic #1's
+  - periodicity
 
-# Transferred data
+Aggregate statistics
+- #unknown
+- #halting
+- #dormant
+- #propagating
 
-tallies/indices of infinites, unknowns, halters 
-tallies/indices of halters with number of steps taken
-periodicity heap (among infinites)
-steps taken heap (among halters)
-numbers of 1's heap (among halters)
+Querying to see a leaderboard among a given beaver's children
 
-
-# System design
-
-Create an array of turing machines
-Keep a set of running machines
-Keep a set of halted machines
-Keep a set of infinite runners
-Infinite loop detection
-- local periodicity 
-- asymptotic periodicity
-Chunk removal optimization
-- if a machine's result is determined by a set of properties, skip all machines that share that property
-Be able to determine a turing machine's transition functions based on its index
-
+Single-beaver spectating
 
 # Implementation
 
@@ -86,18 +67,23 @@ A node is defined by its parent + some additional information:
 Everything starts from empty root node
 - The root node's children are (0, 0) -> (..x, ..y, ..z)
 
-After a node is generated, it will be classified as halting, unknown, or infinite.
-- All halting or infinite nodes are leaf nodes.
-- All unknown nodes are internal nodes
-
 
 ## Busy beaver algorithm
 
-Choose a constant number of steps we give a beaver in one "batch"
-
+For each #states, there is a set of running beaver id's that have that many states.
 Each beaver must traverse its states in numerical order to prevent [distinct but functionally equivalent] beavers from co-existing.
+Run the beaver for a constant number of steps.
 
-For each #states, there is a set of beaver id's that have that many states.
+if a beaver halts
+- move it from the running category to the halting category
+- generate children and place them in the queues for their respective [#states equivalence classes]
+
+If the beaver does not halt
+- run infinite loop detection
+  - classify it as dormant or propagating if possible
+
+If the beaver runs forever
+- move it from the running category to the dormant or propagating category
 
 We want to prioritize beavers that have a smaller number of states.
 The dedicated computational resources towards a beaver will be proportional to the product of the following factors:
@@ -112,3 +98,25 @@ How to implement beaver frequency:
     subtract n and add 1 to the 2-adic valuation to get the next
     [#states equivalence class] to dedicate compute to.
   - use i.trailing_zeros() - n + 1
+
+## Infinite loop detection
+
+### Periodic infinite loop detection
+
+Let history = Vec<(u8, u8)> // vector of (state, symbol) pairs
+Let v = history[history.len() - 1]
+Let offsets = Vec<HashSet<usize>> // each usize is an offset
+Let offset = 0
+
+While offset * offsets.len() < history.len() {
+  If history[history.len() - offset] == v:
+  - always add offset to offsets[0]
+  - add offset to offsets[1] if offset / 2 is in offsets[0]
+  - add offset to offsets[2] if offset / 3 is in offsets[0] and 2 * offset / 3 is in offsets[1]
+  - add offset to offsets[n] if [ (i + 1) * offset / (n + 1) is in offsets[i] ] for all i in (0..n).reverse()
+
+  **Iterate i in decreasing order as an optimization because the offset hashsets are smaller for higher i, allowing for early exit
+}
+
+
+### Aperiodic infinite loop detection

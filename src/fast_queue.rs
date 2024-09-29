@@ -1,5 +1,5 @@
 
-struct FastQueue<'a, T> {
+pub struct FastQueue<'a, T> {
     stacks: (Vec<&'a T>, Vec<&'a T>),
     push_stack: u8,
     pop_index: usize,
@@ -15,13 +15,15 @@ impl<'a, T> FastQueue<'a, T> {
     }
 
     pub fn push(&mut self, value: &'a T) {
+        let previously_empty = self.stacks.0.len() + self.stacks.1.len() == 0;
+
         match self.push_stack {
             0 => { self.stacks.0.push(value); },
             1 => { self.stacks.1.push(value); },
             _ => panic!(),
         };
         
-        if self.stacks.0.len() + self.stacks.1.len() == 1 {
+        if previously_empty {
             // make the queue popppable
             self.push_stack = (self.push_stack + 1) % 2;
         }

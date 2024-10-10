@@ -3,9 +3,7 @@
 ## High priority
 
 
-
 ## Medium priority
-
 
 
 ## Low priority
@@ -79,7 +77,7 @@ if a beaver halts
 - generate children and place them in the queues for their respective [#states equivalence classes]
 
 If the beaver does not halt
-- run infinite loop detection
+- run infinite loop detection if #steps has reached or passed a new power of 2.
   - classify it as dormant or propagating if possible
 
 If the beaver runs forever
@@ -101,22 +99,112 @@ How to implement beaver frequency:
 
 ## Infinite loop detection
 
-### Periodic infinite loop detection
+### Rolling prime factorization algorithm
 
-Let history = Vec<(u8, u8)> // vector of (state, symbol) pairs
-Let v = history[history.len() - 1]
-Let offsets = Vec<HashSet<usize>> // each usize is an offset
-Let offset = 0
 
-While offset * offsets.len() < history.len() {
-  If history[history.len() - offset] == v:
-  - always add offset to offsets[0]
-  - add offset to offsets[1] if offset / 2 is in offsets[0]
-  - add offset to offsets[2] if offset / 3 is in offsets[0] and 2 * offset / 3 is in offsets[1]
-  - add offset to offsets[n] if [ (i + 1) * offset / (n + 1) is in offsets[i] ] for all i in (0..n).reverse()
+### NEW periodic infinite loop detection
 
-  **Iterate i in decreasing order as an optimization because the offset hashsets are smaller for higher i, allowing for early exit
+let h = history
+let hl = h.len()
+let li = hl - 1
+
+for p in 1..=hl / 2 {
+  for o in 0..p {
+    if h[li] != h[li - p] {
+      continue outer loop;
+    }
+  }
+  
+  loop test
 }
+
+#### Loop test
+
+- if same location, test passes and classified as dormant
+- if different location and new outer bound reached on tape at some point in the loop, test passes and classified as propagating
+- otherwise, test fails
+
+### Periodic infinite loop detection (LEGACY)
+
+let history = Vec<(u8, u8)> // vector of (state, symbol) pairs
+let v = history[history.len() - 1]
+let periodicities = Vec<HashSet<usize>> // each usize is an offset
+let offset = 0
+let MIN_REPETITIONS = 5
+
+While offset * periodicities.len() < history.len() {
+  If history[history.len() - offset] == v:
+  - add offset to periodicities[0]
+  - add offset / 2 to periodicities[1] if offset / 2 is in periodicities[0] and offset % 2 == 0
+  - add offset / 3 to periodicities[2] if 2 * offset / 3 is in periodicities[1] and offset % 3 == 0
+  - add offset / (n + 1) to periodicities[n] if n * offset / (n + 1) is in periodicities[n - 1] and offset % (n + 1) == 0
+  offset += 1
+}
+
+if periodicities.len() == 0:
+- no loop detected
+
+let candidates = periodicities[periodicities.len() - 1]
+sample select locations on remainder of the tape to see how many total repetitions each candidate has
+- the candidate with the most repetitons undergoes the loop test
+If it passes the loop test, the beaver is an infinite runner and we are done
+
+If it fails the loop test, find all multiples of the candidate that happen in recurring intervals.
+Only check multiples up to the total number of repetitions the original candidate had.
+- let pl = periodicities.len()
+- find candidates of 2x periodicity by searching in periodicities[pl / 2 - 1] (binary search)
+- find candidates of 3x periodicity by searching in periodicities[pl / 3 - 1] (binary search)
+- etc.
+  - don't look for any candidates in periodicities[0]
+- get number of repetitions for each candidate
+
+106272...
+
+1: 10
+2: 1-6
+3: 1--2
+4: 1---7
+5: 1----2
+6: 1-----1
+   10----10
+   106
+
+1001001
+
+1: 10
+2: 1-0
+3: 1--1
+   10-10
+   100100 -> loop test (fails)
+4: 1---0
+5: 1----0
+6: 1-----1
+   10----11
+7: 1------1
+   ...
+   10010011001001 -> loop test (succeeds)
+
+
+
+
+#### The loop test
+
+let p = periodicity
+
+guard: most recent cycle identical to second most recent cycle in regards to states and symbols, as well as head position with some offset (0 included)
+- return NotInfinite if not
+
+guard: most recent cycle identical to second most recent cycle in regards to states and symbols, as well as head position with 0 offset
+- return Dormant if so
+
+
+
+
+
+
+
+
+
 
 
 ### Aperiodic infinite loop detection

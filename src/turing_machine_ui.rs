@@ -2,8 +2,6 @@ use colored::Colorize;
 use std::fmt::Display;
 use regex::Regex;
 
-// use colored::Colorize;
-
 use crate::turing_machine::TuringMachine;
 
 impl TuringMachine {

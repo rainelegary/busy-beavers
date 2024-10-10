@@ -30,7 +30,7 @@ impl<'a, T> FastQueue<'a, T> {
     }
 
     pub fn pop(&mut self) -> Option<&'a T> {
-        let mut pop_stack = match self.push_stack {
+        let pop_stack = match self.push_stack {
             0 => &mut self.stacks.1,
             1 => &mut self.stacks.0,
             _ => panic!(),

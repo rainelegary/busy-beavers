@@ -8,7 +8,7 @@
 
 ## Low priority
 
-Make an algorithm to determine pre-periodic lifetime of infinite runners
+Make an algorithm to determine pre-cyclic lifetime of infinite runners
 
 # User interface
 
@@ -21,12 +21,12 @@ Display types
 Beaver statistics
 - halters
   - lifetime
-  - max distance from origin
-  - #1's
+  - tape coverage
+  - footprint
 - infinites (dormant / propagating)
-  - pre-periodic lifetime
-  - pre-periodic max distance from origin
-  - pre-periodic #1's
+  - pre-cyclic lifetime
+  - pre-cylic tape coverage
+  - pre-cyclic footprint
   - periodicity
   - loop delta
 
@@ -50,7 +50,7 @@ transition function:
 Enumerations are a number where each "digit" has a different amount of possible values
 
 Digit 1 is the least significant digit
-Digit n has [(#states | min(n + 1, max_states)) * (#symbols | min(n + 1, max_symbols)) * (#deltas | 2 * max_delta + 1)] possible values
+Digit n has [(#states | min(n + 1, max_states)) * (#symbols | min(n + 1, max_symbols)) * (#deltas | 2 * max_delta + 1 if LSD else max_delta + 1)] possible values
 
 Each digit defines what the transition function should do next once it reaches a previously unvisited (state, symbol) pair.
 n represents the number of (state, symbol) pairs that have been visited, including the one that it just being visited now.
@@ -106,7 +106,7 @@ let li = hl - 1
 
 for p in 1..=hl / 2 {
   for o in 0..p {
-    if h[li] != h[li - p] {
+    if h[li - o] != h[li - o - p] {
       continue outer loop;
     }
   }
@@ -121,6 +121,6 @@ for p in 1..=hl / 2 {
 - otherwise, test fails
 
 
-#### Determining pre-periodic lifetime
+#### Determining pre-cyclic lifetime
 
 

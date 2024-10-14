@@ -25,8 +25,8 @@ impl TuringMachine {
         Self::centered_text("▲".red(), None);
         println!();
 
-        let (state, symbol) = self.history[self.history.len() - 1];
-        Self::centered_text(format!("{} ◇ {}", state, symbol), None);
+        let current = &self.history[self.history.len() - 1];
+        Self::centered_text(format!("{} ◇ {}", current.state, current.symbol), None);
         println!();
     }
     

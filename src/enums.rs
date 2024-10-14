@@ -17,9 +17,9 @@ pub enum HaltingStats {
 
 #[derive(Eq, PartialEq, Hash, EnumIter)]
 pub enum InfiniteStats {
-    PPLifetime,
-    PPOffset,
-    PPFootprint,
+    CLifetime,
+    PCOffset,
+    PCFootprint,
     Periodicity,
     LoopDelta,
 }

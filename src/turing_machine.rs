@@ -1,27 +1,27 @@
 use std::collections::HashMap;
 
-pub type TFn = HashMap<(u8, u8), (u8, u8, i8)>;
+pub type TFn = HashMap<TFnKey, TFnValue>;
 
 pub struct TuringMachine {
     pub t_fn: TFn,
-    pub tape: (Vec<u8>, Vec<u8>),
+    pub tape: Tape,
     pub head: isize,
     pub halted: bool,
-    pub history: Vec<(u8, u8)>,
+    pub history: Vec<TFnKey>,
 }
 
 impl TuringMachine {
     pub fn new(t_fn: TFn) -> Self {
         TuringMachine {
             t_fn,
-            tape: (vec![], vec![0]),
+            tape: Tape::new(),
             head: 0,
             halted: false,
-            history: vec![(0, 0)],
+            history: vec![TFnKey{state: 0, symbol: 0}],
         }
     }
     
-    pub fn run(&mut self, duration: u64) {
+    pub fn run(&mut self, duration: usize) {
         for _ in 0..duration {
             self.show_tape_and_state();
             self.step();
@@ -32,20 +32,20 @@ impl TuringMachine {
     }
         
     fn step(&mut self) {
-        let (state, symbol) = self.history[self.history.len() - 1];
-        if !self.t_fn.contains_key(&(state, symbol)) {
+        let current = &self.history[self.history.len() - 1];
+        if !self.t_fn.contains_key(current) {
             self.halted = true;
             return;
         }
-        let (state, symbol, delta) = self.t_fn[&(state, symbol)];
-        self.set_symbol(symbol);
-        self.move_head(delta);
+        let next = self.t_fn[current].clone();
+        self.set_symbol(next.symbol);
+        self.move_head(next.delta);
     
-        let symbol = self.get_symbol();
-        self.history.push((state, symbol));
+        let local_symbol = self.get_symbol();
+        self.history.push(TFnKey{state: next.state, symbol: local_symbol});
     }
 
-        
+
     pub fn get_symbol(&mut self) -> u8 {
         let (&mut ref mut vec, index) = self.vec_and_index_head();
         vec[index]
@@ -70,8 +70,45 @@ impl TuringMachine {
     
     pub fn vec_and_index(&mut self, loc: &isize) -> (&mut Vec<u8>, usize) {
         match *loc {
-            l if l < 0 => (&mut self.tape.0, (-l - 1) as usize),
-            l => (&mut self.tape.1, l as usize),
+            l if l < 0 => (&mut self.tape.negative, (-l - 1) as usize),
+            l => (&mut self.tape.positive, l as usize),
         }
+    }
+}
+
+#[derive(Eq, PartialEq, Hash, Clone)]
+pub struct TFnKey {
+    pub state: u8,
+    pub symbol: u8,
+}
+
+#[derive(Clone)]
+pub struct TFnValue {
+    state: u8,
+    symbol: u8,
+    pub delta: i8,
+}
+
+pub struct Tape {
+    negative: Vec<u8>,
+    positive: Vec<u8>,
+}
+
+impl Tape {
+    fn new() -> Self {
+        Tape {
+            negative: vec![],
+            positive: vec![0],
+        }
+    }
+
+    pub fn len(&self) -> usize {
+        self.negative.len() + self.positive.len()
+    }
+
+
+    pub fn footprint(&self) -> usize {
+        self.negative.iter().map(|&x| x as usize).sum::<usize>() +
+        self.positive.iter().map(|&x| x as usize).sum::<usize>()
     }
 }

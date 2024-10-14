@@ -1,23 +1,41 @@
 use std::collections::HashMap;
 
 use crate::fast_queue::FastQueue;
+use crate::beaver_stats::BeaverStats;
+use crate::turing_machine::TuringMachine;
+use crate::turing_machine::TFn;
 
-struct Beaver {
-    id: u64,
+struct BusyBeavers {
+    beavers: HashMap<u64, TuringMachine>,
+    running: Vec<FastQueue<u64>>,
+    stats: BeaverStats,
+    run_number: u64,
+    least_running_states: usize,
+    most_running_states: usize,
 }
 
-struct BusyBeavers<'a> {
-    running: Vec<FastQueue<'a, u64>>, // running[n] = queue of running n-state beavers
-    halting_hg: Vec<Vec<Vec<u64>>>, // halting_hg[n][m] = list of n-state beavers that halt after m steps (histogram)
-    halting_lb: Vec<HashMap<u64, u64>>, // halting_lb[]
-    dormant: Vec<u64>,
-    propagating: Vec<u64>,
-    
-}
 
+impl<'a> BusyBeavers {
+    const RUN_DURATION: u64 = 10;
 
-impl<'a> BusyBeavers<'a> {
-    fn create_beaver(id: u64) {
-        
+    pub fn new() -> Self {
+        let beavers = HashMap::from([
+            (0, TuringMachine::new(TFn::new()))
+        ]);
+
+        let mut busy_beavers = BusyBeavers {
+            beavers: beavers,
+            running: vec![FastQueue::from(&[0])],
+            stats: BeaverStats::new(),
+            run_number: 0,
+            least_running_states: 1,
+            most_running_states: 1,
+        };
+        busy_beavers.running[0].push(0);
+        busy_beavers
     }
+
+    fn run(&mut self) {
+
+    } 
 }

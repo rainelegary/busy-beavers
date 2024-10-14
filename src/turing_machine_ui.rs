@@ -26,7 +26,7 @@ impl TuringMachine {
         println!();
 
         let (state, symbol) = self.history[self.history.len() - 1];
-        Self::centered_text(&format!("{} ◇ {}", state, symbol), None);
+        Self::centered_text(format!("{} ◇ {}", state, symbol), None);
         println!();
     }
     

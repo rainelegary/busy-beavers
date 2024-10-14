@@ -21,8 +21,8 @@ impl TuringMachine {
         }
     }
     
-    pub fn run(&mut self, steps: u64) {
-        for _ in 0..steps {
+    pub fn run(&mut self, duration: u64) {
+        for _ in 0..duration {
             self.show_tape_and_state();
             self.step();
             if self.halted {

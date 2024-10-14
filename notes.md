@@ -8,15 +8,15 @@
 
 ## Low priority
 
-
+Make an algorithm to determine pre-periodic lifetime of infinite runners
 
 # User interface
 
 Display types
-- tally
+- group tally
 - list beavers
 - histogram of common low-end scores
-- leaderboard of rare high-end score
+- leaderboard of rare high-end scores
 
 Beaver statistics
 - halters
@@ -28,6 +28,7 @@ Beaver statistics
   - pre-periodic max distance from origin
   - pre-periodic #1's
   - periodicity
+  - loop delta
 
 Aggregate statistics
 - #unknown
@@ -99,11 +100,6 @@ How to implement beaver frequency:
 
 ## Infinite loop detection
 
-### Rolling prime factorization algorithm
-
-
-### NEW periodic infinite loop detection
-
 let h = history
 let hl = h.len()
 let li = hl - 1
@@ -123,3 +119,8 @@ for p in 1..=hl / 2 {
 - if same location, test passes and classified as dormant
 - if different location and new outer bound reached on tape at some point in the loop, test passes and classified as propagating
 - otherwise, test fails
+
+
+#### Determining pre-periodic lifetime
+
+

@@ -1,23 +1,31 @@
 use std::collections::HashMap;
 
+use crate::stats::utils::StatesAndSymbols;
+
 pub type TFn = HashMap<TFnKey, TFnValue>;
 
+#[derive(Clone)]
 pub struct TuringMachine {
     pub t_fn: TFn,
     pub tape: Tape,
     pub head: isize,
     pub halted: bool,
     pub history: Vec<TFnKey>,
+    pub states_and_symbols: StatesAndSymbols,
 }
 
 impl TuringMachine {
     pub fn new(t_fn: TFn) -> Self {
         TuringMachine {
-            t_fn,
+            t_fn: t_fn.clone(),
             tape: Tape::new(),
             head: 0,
             halted: false,
             history: vec![TFnKey{state: 0, symbol: 0}],
+            states_and_symbols: StatesAndSymbols {
+                n_states: t_fn.iter().map(|(_, v)| v.state + 1).max().unwrap_or(1),
+                n_symbols: t_fn.iter().map(|(_, v)| v.symbol + 1).max().unwrap_or(1),
+            }
         }
     }
     
@@ -44,7 +52,6 @@ impl TuringMachine {
         let local_symbol = self.get_symbol();
         self.history.push(TFnKey{state: next.state, symbol: local_symbol});
     }
-
 
     pub fn get_symbol(&mut self) -> u8 {
         let (&mut ref mut vec, index) = self.vec_and_index_head();
@@ -84,11 +91,12 @@ pub struct TFnKey {
 
 #[derive(Clone)]
 pub struct TFnValue {
-    state: u8,
-    symbol: u8,
+    pub state: u8,
+    pub symbol: u8,
     pub delta: i8,
 }
 
+#[derive(Clone)]
 pub struct Tape {
     negative: Vec<u8>,
     positive: Vec<u8>,

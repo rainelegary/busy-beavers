@@ -11,15 +11,15 @@ pub enum BeaverType {
 #[derive(Eq, PartialEq, Hash, EnumIter)]
 pub enum HaltingStats {
     Lifetime,
-    Offset,
+    Coverage,
     Footprint,
 }
 
 #[derive(Eq, PartialEq, Hash, EnumIter)]
 pub enum InfiniteStats {
-    CLifetime,
-    PCOffset,
-    PCFootprint,
     Periodicity,
     LoopDelta,
+    PCLifetime,
+    PCCoverage,
+    PCFootprint,
 }

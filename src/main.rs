@@ -2,12 +2,12 @@ mod turing_machine;
 mod turing_machine_ui;
 mod busy_beavers;
 mod fast_queue;
-mod beaver_stats;
-mod enums;
+mod stats;
 mod loop_test;
 
 use crate::turing_machine::TFn; 
 use crate::turing_machine::TuringMachine;
+use crate::busy_beavers::BusyBeavers;
 
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
@@ -21,6 +21,9 @@ fn main() {
     ).unwrap();
 
     println!("{}", pc_lifetime);
+
+    let mut busy_beavers = BusyBeavers::new();
+    busy_beavers.run();
 
     // let t_fn: TFn = TFn::from([
     //     ((0, 0), (1, 1, 1)),

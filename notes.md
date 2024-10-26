@@ -2,13 +2,27 @@
 
 ## High priority
 
+Beaver proliferation
+Make a user interface
+Make a thread responsible for the user interface
 
 ## Medium priority
 
 
+
 ## Low priority
 
-Make an algorithm to determine pre-cyclic lifetime of infinite runners
+
+
+# general notes
+
+quotas
+- 2/6 max states/symbols + 1 max delta
+- 2/5 max states/symbols + 4 max delta
+- 3/3 max states/symbols + 7 max delta
+- 2/4 max states/symbols + 17 max delta
+- 1/10 max states/symbols + 6 max delta
+
 
 # User interface
 
@@ -47,13 +61,13 @@ Single-beaver spectating
 transition function:
 (state, symbol) -> (state, symbol, delta)
 
-Enumerations are a number where each "digit" has a different amount of possible values
+Enumerations are a number where each "digit" has a different amount of possible values. A beaver with a transitation function with n elements has n enumeration "digits".
 
 Digit 1 is the least significant digit
 Digit n has [(#states | min(n + 1, max_states)) * (#symbols | min(n + 1, max_symbols)) * (#deltas | 2 * max_delta + 1 if LSD else max_delta + 1)] possible values
 
 Each digit defines what the transition function should do next once it reaches a previously unvisited (state, symbol) pair.
-n represents the number of (state, symbol) pairs that have been visited, including the one that it just being visited now.
+n represents the number of (state, symbol) pairs that have been visited, including the one that is just being visited now.
 
 If we are on digit m where m is greater than the number of digits, the transition function assumes it must go to a halting state as its next move,
 meaning the resulting machine will halt.
@@ -121,6 +135,6 @@ for p in 1..=hl / 2 {
 - otherwise, test fails
 
 
-#### Determining pre-cyclic lifetime
+
 
 

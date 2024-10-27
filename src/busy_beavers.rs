@@ -106,13 +106,12 @@ impl BusyBeavers {
             };
 
             let child_id = self.beavers.len();
-            self.beavers.push(child.clone());
             self.running
                 .entry(child.states_and_symbols)
-                .or_insert_with(FastQueue::new)
+                .or_default()
                 .push(child_id);
-
             self.stats.add_undetermined(child.states_and_symbols);
+            self.beavers.push(child);
         }
     }
 }

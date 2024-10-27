@@ -1,4 +1,5 @@
 
+#[derive(Default)]
 pub struct FastQueue<T> {
     stacks: (Vec<T>, Vec<T>),
     push_stack: u8,

@@ -1,5 +1,4 @@
 use crate::busy_beavers::BusyBeavers;
-use crate::turing_machine::TuringMachine;
 
 impl BusyBeavers {
     pub fn loop_test(&mut self, beaver_id: usize) -> Option<usize> {

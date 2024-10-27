@@ -52,8 +52,4 @@ impl<T: Clone> FastQueue<T> {
         }
         value
     }
-
-    pub fn len(&self) -> usize {
-        self.stacks.0.len() + self.stacks.1.len() - self.pop_index
-    }
 }

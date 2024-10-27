@@ -40,15 +40,15 @@ impl BeaverStats {
     
     pub fn update_halting_stats(&mut self, beaver_id: usize, beaver: &mut TuringMachine) {
         let states_and_symbols = beaver.states_and_symbols;
-        self.types.get_mut(&BeaverType::Halting).map(|stat| stat.add(states_and_symbols));
+        self.types.get_mut(&BeaverType::Halting).unwrap().add(states_and_symbols);
         
         let lifetime = BeaverScore { beaver: beaver_id, score: beaver.history.len() };
         let coverage = BeaverScore { beaver: beaver_id, score: beaver.tape.len() }; 
         let footprint = BeaverScore { beaver: beaver_id, score: beaver.tape.footprint() }; 
-        
-        self.halting.get_mut(&HaltingStats::Lifetime).map(|stat| stat.add(states_and_symbols, lifetime));
-        self.halting.get_mut(&HaltingStats::Coverage).map(|stat| stat.add(states_and_symbols, coverage));
-        self.halting.get_mut(&HaltingStats::Footprint).map(|stat| stat.add(states_and_symbols, footprint));
+
+        self.halting.get_mut(&HaltingStats::Lifetime).unwrap().add(states_and_symbols, lifetime);
+        self.halting.get_mut(&HaltingStats::Coverage).unwrap().add(states_and_symbols, coverage);
+        self.halting.get_mut(&HaltingStats::Footprint).unwrap().add(states_and_symbols, footprint);
     }
 
     pub fn update_infinite_stats(&mut self, beaver_id: usize, beaver: &mut TuringMachine, periodicity: usize) {
@@ -66,24 +66,24 @@ impl BeaverStats {
         beaver_copy.run(periodicity);
         
         let periodicity = BeaverScore { beaver: beaver_id, score: periodicity };
-        let loop_delta = BeaverScore { beaver: beaver_id, score: (beaver_copy.head - head).abs() as usize };
+        let loop_delta = BeaverScore { beaver: beaver_id, score: (beaver_copy.head - head).unsigned_abs() };
         let pc_lifetime = BeaverScore { beaver: beaver_id, score: pc_lifetime };
         let pc_coverage = BeaverScore { beaver: beaver_id, score: beaver_copy.tape.len() };
         let pc_footprint = BeaverScore { beaver: beaver_id, score: beaver_copy.tape.footprint() };
 
-        self.infinite.get_mut(&InfiniteStats::Periodicity).map(|stat| stat.add(states_and_symbols, periodicity));
-        self.infinite.get_mut(&InfiniteStats::LoopDelta).map(|stat| stat.add(states_and_symbols, loop_delta));
-        self.infinite.get_mut(&InfiniteStats::PCLifetime).map(|stat| stat.add(states_and_symbols, pc_lifetime));
-        self.infinite.get_mut(&InfiniteStats::PCCoverage).map(|stat| stat.add(states_and_symbols, pc_coverage));
-        self.infinite.get_mut(&InfiniteStats::PCFootprint).map(|stat| stat.add(states_and_symbols, pc_footprint));
+        self.infinite.get_mut(&InfiniteStats::Periodicity).unwrap().add(states_and_symbols, periodicity);
+        self.infinite.get_mut(&InfiniteStats::LoopDelta).unwrap().add(states_and_symbols, loop_delta);
+        self.infinite.get_mut(&InfiniteStats::PCLifetime).unwrap().add(states_and_symbols, pc_lifetime);
+        self.infinite.get_mut(&InfiniteStats::PCCoverage).unwrap().add(states_and_symbols, pc_coverage);
+        self.infinite.get_mut(&InfiniteStats::PCFootprint).unwrap().add(states_and_symbols, pc_footprint);
     }
 
     pub fn add_undetermined(&mut self, states_and_symbols: StatesAndSymbols) {
-        self.types.get_mut(&BeaverType::Undetermined).map(|stat| stat.add(states_and_symbols));
+        self.types.get_mut(&BeaverType::Undetermined).unwrap().add(states_and_symbols);
     }
 
     pub fn subtract_undetermined(&mut self, states_and_symbols: StatesAndSymbols) {
-        self.types.get_mut(&BeaverType::Undetermined).map(|stat| stat.subtract(states_and_symbols));
+        self.types.get_mut(&BeaverType::Undetermined).unwrap().subtract(states_and_symbols);
     }
 }
 

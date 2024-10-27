@@ -23,8 +23,8 @@ impl TuringMachine {
             halted: false,
             history: vec![TFnKey{state: 0, symbol: 0}],
             states_and_symbols: StatesAndSymbols {
-                n_states: t_fn.iter().map(|(_, v)| v.state + 1).max().unwrap_or(1),
-                n_symbols: t_fn.iter().map(|(_, v)| v.symbol + 1).max().unwrap_or(1),
+                n_states: t_fn.values().map(|v| v.state + 1).max().unwrap_or(1),
+                n_symbols: t_fn.values().map(|v| v.symbol + 1).max().unwrap_or(1),
             }
         }
     }

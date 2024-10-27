@@ -22,13 +22,16 @@ impl CompetitiveStat {
         let beaver_id = beaver_score.beaver;
         let score = beaver_score.score;
 
-        let histogram = self.histograms.entry(states_and_symbols.clone()).or_insert(vec![Vec::new(); Self::CONTAINER_SIZE]);
-        let leaderboard = self.leaderboards.entry(states_and_symbols.clone()).or_insert(BinaryHeap::new());
+        self.histograms
+            .entry(states_and_symbols)
+            .or_insert(vec![Vec::new(); Self::CONTAINER_SIZE])
+            .get_mut(score)
+            .unwrap()
+            .push(beaver_id);
 
-        match histogram.get_mut(score) {
-            Some(beavers) => beavers.push(beaver_id),
-            None => (),
-        }
+        let leaderboard = self.leaderboards
+            .entry(states_and_symbols)
+            .or_default();
 
         leaderboard.push(beaver_score);
         if leaderboard.len() > Self::CONTAINER_SIZE {

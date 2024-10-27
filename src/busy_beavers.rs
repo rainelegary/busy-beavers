@@ -1,6 +1,5 @@
 use itertools::iproduct;
 
-use std::cmp::min;
 use std::cmp::max;
 use std::collections::HashMap;
 
@@ -51,7 +50,7 @@ impl BusyBeavers {
             let class = self.update_stats_and_classify(beaver_id);
                 
             if class == BeaverType::Undetermined {
-                self.running.get_mut(&states_and_symbols).map(|queue| queue.push(beaver_id));
+                self.running.get_mut(&states_and_symbols).unwrap().push(beaver_id);
             }
 
             if class == BeaverType::Halting {

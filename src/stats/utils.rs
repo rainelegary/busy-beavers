@@ -6,7 +6,7 @@ pub struct StatesAndSymbols {
     pub n_symbols: u8,
 }
 
-#[derive(Eq, PartialEq, Clone)]
+#[derive(Eq, PartialEq, Clone, Copy)]
 pub struct BeaverScore {
     pub beaver: usize,
     pub score: usize,

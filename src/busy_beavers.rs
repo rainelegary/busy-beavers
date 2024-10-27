@@ -15,15 +15,12 @@ pub struct BusyBeavers {
     pub beavers: Vec<TuringMachine>,
     running: HashMap<StatesAndSymbols, FastQueue<usize>>,
     stats: BeaverStats,
-    run_number: u64,
 }
 
 
 impl BusyBeavers {
     const RUN_DURATION: usize = 100;
-    pub const MAX_STATES: u8 = 5;
-    pub const MAX_SYMBOLS: u8 = 2;
-    pub const MAX_DELTA: i8 = 1; 
+    pub const MAX_DELTA: u8 = 1; 
 
     pub fn new() -> Self {
         BusyBeavers {
@@ -33,7 +30,6 @@ impl BusyBeavers {
                 FastQueue::from(&[0]),
             )]),
             stats: BeaverStats::new(),
-            run_number: 1,
         }
     }
 
@@ -93,11 +89,11 @@ impl BusyBeavers {
     fn proliferate(&mut self, beaver_id: usize) {
         let beaver = self.beavers[beaver_id].clone();
 
-        let states_range = 0..min(beaver.states_and_symbols.n_states + 1, Self::MAX_STATES);
-        let symbols_range = 0..min(beaver.states_and_symbols.n_symbols + 1, Self::MAX_SYMBOLS);
+        let states_range = 0..beaver.states_and_symbols.n_states + 1;
+        let symbols_range = 0..beaver.states_and_symbols.n_symbols + 1;
         let deltas_range = match beaver.t_fn.len() {
-            0 => 0..=Self::MAX_DELTA,
-            _ => -(Self::MAX_DELTA)..=Self::MAX_DELTA,
+            0 => 0..=Self::MAX_DELTA as i8,
+            _ => -(Self::MAX_DELTA as i8)..=Self::MAX_DELTA as i8,
         };
 
         let current_status = beaver.history.last().unwrap();

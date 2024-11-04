@@ -2,7 +2,6 @@
 
 ## High priority
 
-Beaver proliferation
 Make a user interface
 Make a thread responsible for the user interface
 
@@ -26,6 +25,13 @@ quotas
 
 # User interface
 
+command examples
+- tally {n_states} {n_symbols}
+- list lifetime {n_states} {n_symbols} {score}
+- hist periodicity {n_states} {n_symbols}
+- lead footprint {n_states} {n_symbols}
+- spec {beaver} {n_steps}
+
 Display types
 - group tally
 - list beavers
@@ -47,8 +53,7 @@ Beaver statistics
 Aggregate statistics
 - #unknown
 - #halting
-- #dormant
-- #propagating
+- #infinite
 
 Querying to see a leaderboard among a given beaver's children
 

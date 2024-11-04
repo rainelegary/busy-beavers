@@ -8,7 +8,7 @@ use crate::stats::beaver_stats::BeaverStats;
 use crate::stats::utils::StatesAndSymbols;
 use crate::turing_machine::TFnValue;
 use crate::turing_machine::TuringMachine;
-use crate::stats::enums::BeaverType;
+use crate::stats::utils::BeaverType;
 
 pub struct BusyBeavers {
     pub beavers: Vec<TuringMachine>,

@@ -1,15 +1,14 @@
-use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
 use crate::stats::utils::BeaverScore;
 use crate::stats::utils::StatesAndSymbols;
 pub struct CompetitiveStat {
-    histograms: HashMap<StatesAndSymbols, Vec<Vec<usize>>>,
-    leaderboards: HashMap<StatesAndSymbols, BinaryHeap<BeaverScore>>,
+    pub histograms: HashMap<StatesAndSymbols, Vec<Vec<usize>>>,
+    pub leaderboards: HashMap<StatesAndSymbols, Vec<BeaverScore>>,
 }
 
 impl CompetitiveStat {
-    const CONTAINER_SIZE: usize = 16;
+    pub const STAT_LIST_LENGTH: usize = 16;
 
     pub fn new() -> Self {
         CompetitiveStat {
@@ -22,9 +21,15 @@ impl CompetitiveStat {
         let beaver_id = beaver_score.beaver;
         let score = beaver_score.score;
 
-        self.histograms
+        let histogram = self.histograms
             .entry(states_and_symbols)
-            .or_insert(vec![Vec::new(); Self::CONTAINER_SIZE])
+            .or_default();
+    
+        if histogram.len() <= score {
+            histogram.resize(score + 1, Vec::new());
+        }
+
+        histogram
             .get_mut(score)
             .unwrap()
             .push(beaver_id);
@@ -33,9 +38,10 @@ impl CompetitiveStat {
             .entry(states_and_symbols)
             .or_default();
 
-        leaderboard.push(beaver_score);
-        if leaderboard.len() > Self::CONTAINER_SIZE {
-            leaderboard.pop();
-        }
+        let position = leaderboard.binary_search(&beaver_score).unwrap_or_else(|e| e);
+        leaderboard.insert(position, beaver_score);
+        leaderboard.resize(Self::STAT_LIST_LENGTH, BeaverScore::default());
     }
 }
+
+

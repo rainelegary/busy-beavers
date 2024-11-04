@@ -18,6 +18,9 @@ impl TuringMachine {
             match symbol {
                 0 => print!("{}", "▉".blue()),  // ◻ ◇ ▽ △ ○ █ ▉
                 1 => print!("{}", "▉".green()), // ◼ ◆ ▼ ▲ ● █ ▉
+                2 => print!("{}", "▉".yellow()),
+                3 => print!("{}", "▉".red()),
+                4 => print!("{}", "▉".cyan()),
                 _ => panic!(),
             };
         }

@@ -5,18 +5,18 @@ use std::collections::HashMap;
 use crate::stats::aggregate_stat::AggregateStat;
 use crate::stats::utils::BeaverScore;
 use crate::stats::competitive_stat::CompetitiveStat;
-use crate::stats::enums::BeaverType;
-use crate::stats::enums::HaltingStats;
-use crate::stats::enums::InfiniteStats;
+use crate::stats::utils::BeaverType;
+use crate::stats::utils::HaltingStat;
+use crate::stats::utils::InfiniteStat;
 
 use crate::turing_machine::TuringMachine;
 
 use super::utils::StatesAndSymbols;
 
 pub struct BeaverStats {
-    types: HashMap<BeaverType, AggregateStat>,
-    halting: HashMap<HaltingStats, CompetitiveStat>,
-    infinite: HashMap<InfiniteStats, CompetitiveStat>,
+    pub types: HashMap<BeaverType, AggregateStat>,
+    pub halting: HashMap<HaltingStat, CompetitiveStat>,
+    pub infinite: HashMap<InfiniteStat, CompetitiveStat>,
 }
 
 impl BeaverStats {
@@ -26,11 +26,11 @@ impl BeaverStats {
                 |beaver_type| (beaver_type, AggregateStat::new())
             ).collect(),
 
-            halting: HaltingStats::iter().map(
+            halting: HaltingStat::iter().map(
                 |stat| (stat, CompetitiveStat::new())
             ).collect(),
 
-            infinite: InfiniteStats::iter().map(
+            infinite: InfiniteStat::iter().map(
                 |stat| (stat, CompetitiveStat::new())
             ).collect(),
         };
@@ -46,9 +46,9 @@ impl BeaverStats {
         let coverage = BeaverScore { beaver: beaver_id, score: beaver.tape.len() }; 
         let footprint = BeaverScore { beaver: beaver_id, score: beaver.tape.footprint() }; 
 
-        self.halting.get_mut(&HaltingStats::Lifetime).unwrap().add(states_and_symbols, lifetime);
-        self.halting.get_mut(&HaltingStats::Coverage).unwrap().add(states_and_symbols, coverage);
-        self.halting.get_mut(&HaltingStats::Footprint).unwrap().add(states_and_symbols, footprint);
+        self.halting.get_mut(&HaltingStat::Lifetime).unwrap().add(states_and_symbols, lifetime);
+        self.halting.get_mut(&HaltingStat::Coverage).unwrap().add(states_and_symbols, coverage);
+        self.halting.get_mut(&HaltingStat::Footprint).unwrap().add(states_and_symbols, footprint);
     }
 
     pub fn update_infinite_stats(&mut self, beaver_id: usize, beaver: &mut TuringMachine, periodicity: usize) {
@@ -71,11 +71,11 @@ impl BeaverStats {
         let pc_coverage = BeaverScore { beaver: beaver_id, score: beaver_copy.tape.len() };
         let pc_footprint = BeaverScore { beaver: beaver_id, score: beaver_copy.tape.footprint() };
 
-        self.infinite.get_mut(&InfiniteStats::Periodicity).unwrap().add(states_and_symbols, periodicity);
-        self.infinite.get_mut(&InfiniteStats::LoopDelta).unwrap().add(states_and_symbols, loop_delta);
-        self.infinite.get_mut(&InfiniteStats::PCLifetime).unwrap().add(states_and_symbols, pc_lifetime);
-        self.infinite.get_mut(&InfiniteStats::PCCoverage).unwrap().add(states_and_symbols, pc_coverage);
-        self.infinite.get_mut(&InfiniteStats::PCFootprint).unwrap().add(states_and_symbols, pc_footprint);
+        self.infinite.get_mut(&InfiniteStat::Periodicity).unwrap().add(states_and_symbols, periodicity);
+        self.infinite.get_mut(&InfiniteStat::LoopDelta).unwrap().add(states_and_symbols, loop_delta);
+        self.infinite.get_mut(&InfiniteStat::PCLifetime).unwrap().add(states_and_symbols, pc_lifetime);
+        self.infinite.get_mut(&InfiniteStat::PCCoverage).unwrap().add(states_and_symbols, pc_coverage);
+        self.infinite.get_mut(&InfiniteStat::PCFootprint).unwrap().add(states_and_symbols, pc_footprint);
     }
 
     pub fn add_undetermined(&mut self, states_and_symbols: StatesAndSymbols) {

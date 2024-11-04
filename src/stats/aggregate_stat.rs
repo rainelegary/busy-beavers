@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::stats::utils::StatesAndSymbols;
 
 pub struct AggregateStat {
-    tallies: HashMap<StatesAndSymbols, u64>,
+    pub tallies: HashMap<StatesAndSymbols, u64>,
 }
 
 impl AggregateStat {
